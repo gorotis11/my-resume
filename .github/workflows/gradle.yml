@@ -62,4 +62,4 @@ jobs:
       run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
 
     - name: docker stop
-      run: docker stop $(sudo docker ps -q -f "name=my-resume") 2>/dev/null || true
+      run: docker stop $(docker ps -q -f "name=my-resume") 2>/dev/null || true
