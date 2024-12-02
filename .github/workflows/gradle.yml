@@ -59,7 +59,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: docker pull
-      run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
+      run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
 
     - name: docker stop
-      run: docker stop $(sudo docker ps -q -f "name=my-resume") 2>/dev/null || true
+      run: sudo docker stop $(sudo docker ps -q -f "name=my-resume") 2>/dev/null || true
