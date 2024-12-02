@@ -1,0 +1,15 @@
+spring:
+    application:
+        name: my-resume
+    thymeleaf:
+        prefix: classpath:templates/
+        cache: false
+        mode: HTML
+        suffix: .html
+        check-template-location: true
+server:
+  port: 18080
+  servlet:
+    context-path: /
+    session:
+      timeout: 600s

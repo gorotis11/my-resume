@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Resume - gangbin.park</title>
+        <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <div th:replace="~{fragments/nav.html :: fragment-nav}" class=""></div>
+        <!-- Page Content-->
+        <div class="container-fluid p-0">
+            <!-- profile-->
+            <div th:replace="~{contents/profile.html :: fragment-profile}"></div>
+            <hr class="m-0" />
+            <!-- INTRODUCE-->
+            <div th:replace="~{contents/introduce.html :: fragment-introduce}"></div>
+            <hr class="m-0" />
+            <!-- Skills-->
+            <div th:replace="~{contents/skills.html :: fragment-skills}"></div>
+            <hr class="m-0" />
+            <!-- Experience-->
+            <div th:replace="~{contents/experience.html :: fragment-experience}"></div>
+            <hr class="m-0" />
+            <!-- Project-->
+            <div th:replace="~{contents/project.html :: fragment-project}"></div>
+            <hr class="m-0" />
+            <!-- Etc-->
+            <div th:replace="~{contents/etc.html :: fragment-etc}"></div>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
