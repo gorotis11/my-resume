@@ -1,4 +1,4 @@
-# my-resume
 ## 프로젝트 구성
-1. spring-boot
-2. docker
+1. Spring-boot
+2. Docker
+3. CI/CD
