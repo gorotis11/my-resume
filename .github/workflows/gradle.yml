@@ -64,6 +64,9 @@ jobs:
     - name: docker stop container
       run: docker stop $(docker ps -q -f "name=my-resume") 2>/dev/null || true
 
+    - name: docker remove container
+      run: docker rm $(docker ps -a -q -f "name=my-resume") 2>/dev/null || true
+
     - name: docker run container
       run: docker run --name my-resume --network my-bridge-network -p 18080:18080 -d ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
 
