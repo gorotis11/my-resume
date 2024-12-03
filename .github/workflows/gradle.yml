@@ -65,7 +65,7 @@ jobs:
       run: docker stop $(docker ps -q -f "name=my-resume") 2>/dev/null || true
 
     - name: docker run container
-      run: docker run --name my-resume --network=my-bridge-network -p 18080:18080 -d ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
+      run: docker run --name my-resume --network my-bridge-network -p 18080:18080 -d ${{ secrets.DOCKERHUB_USERNAME }}/my-resume
 
     - name: docker remove images
       run: sudo docker system prune -f
