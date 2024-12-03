@@ -13,7 +13,7 @@ public class MainController {
     }
 
     @RequestMapping("/resume")
-    public String resume(Model model) {
+    public String resume() {
         return "resume";
     }
 }
