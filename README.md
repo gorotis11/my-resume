@@ -1,4 +1,2 @@
 ## 프로젝트 구성
-1. Spring-boot
-2. Docker
-3. CI/CD
+![js](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
