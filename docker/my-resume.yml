@@ -1,13 +1,17 @@
 version: "3"
 
 services:
-    my-daily-reporter:
-        image: gorotis11/my-resume:latest
+    my-resume:
+        image: 192.168.45.100:5000/my-resume:${SERVICE_VERSION}
         container_name: my-resume
+        environment:
+            - SERVICE_NAME=${SERVICE_NAME}
+            - SERVICE_VERSION=${SERVICE_VERSION}
+            - DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT}
         networks:
             - my-bridge-network
         ports:
-            - 18080:18080
+            - ${DOCKER_HOST_NON_SECURE_PORT}:18080
         restart: always
 networks:
     my-bridge-network:
