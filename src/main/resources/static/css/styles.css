@@ -618,6 +618,14 @@ progress {
   width: 260px;
 }
 
+.img-infrastructure {
+  padding: 0.25rem;
+  background-color: #fff;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.375rem;
+  width: 100%;
+}
+
 .figure {
   display: inline-block;
 }
@@ -11003,6 +11011,9 @@ section.resume-section .resume-section-content-body {
   }
   .img-thumbnail {
     margin-right: 1rem;
+  }
+  .img-infrastructure {
+    width: 75%;
   }
   section.resume-section .resume-section-content-body {
     display: flex;
