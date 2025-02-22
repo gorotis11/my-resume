@@ -85,6 +85,12 @@ pipeline {
 
                     sh """
                         ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            docker system prune -f
+                        '
+                    """
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
                             SERVICE_NAME=${SERVICE_NAME} \\
                             SERVICE_VERSION=${SERVICE_VERSION} \\
                             DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\
