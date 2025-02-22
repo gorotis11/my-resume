@@ -14,7 +14,7 @@ pipeline {
         DOCKER_HOST_NON_SECURE_PORT=18080
 
         JENKINS_SSH_PK = '/var/jenkins_home/.ssh/jenkins_rsa'
-        JENKINS_SSH_CREDENTIALS = 'jenkins-ssh'
+        JENKINS_SSH_CREDENTIALS = 'spring-thief-resume'
 
         DEPLOY_HOST = "wien@192.168.45.61"
         DEPLOY_UPLOAD_PATH = "/app/docker/${SERVICE_NAME}"
