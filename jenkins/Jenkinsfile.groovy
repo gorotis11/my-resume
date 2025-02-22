@@ -9,14 +9,14 @@ pipeline {
         GIT_CREDENTIALS = 'github-token'
 
         DOCKER_OS = "linux/amd64"
-        DOCKER_REGISTRY = '192.168.45.100:5000'
+        DOCKER_REGISTRY = '192.168.45.51:5000'
         DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${SERVICE_NAME}"
         DOCKER_HOST_NON_SECURE_PORT=18080
 
         JENKINS_SSH_PK = '/var/jenkins_home/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'jenkins-ssh'
 
-        DEPLOY_HOST = "wien@192.168.45.100"
+        DEPLOY_HOST = "wien@192.168.45.61"
         DEPLOY_UPLOAD_PATH = "/app/docker/${SERVICE_NAME}"
         DEPLOY_DOCKER_COMPOSE_FILE_NAME = "${SERVICE_NAME}.yml"
     }
