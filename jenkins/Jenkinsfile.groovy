@@ -55,7 +55,7 @@ pipeline {
                 sh "docker push ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION}"
             }
         }
-        stage('push docker image') {
+        stage('remove docker image') {
             steps {
                 // sh "docker rmi -f \$(docker images -f \"dangling=true\" -q)"
                 sh "docker system prune -f"
