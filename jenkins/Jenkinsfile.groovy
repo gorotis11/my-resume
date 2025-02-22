@@ -55,6 +55,12 @@ pipeline {
                 sh "docker push ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION}"
             }
         }
+        stage('push docker image') {
+            steps {
+                // sh "docker rmi -f \$(docker images -f \"dangling=true\" -q)"
+                sh "docker system prune -f"
+            }
+        }
         stage('upload docker-compose file') {
             steps {
                 sshagent (credentials: [JENKINS_SSH_CREDENTIALS]) {
@@ -68,9 +74,15 @@ pipeline {
                 }
             }
         }
-        stage('deploy docker image') {
+        stage('deploy docker container') {
             steps {
                 sshagent (credentials: [JENKINS_SSH_CREDENTIALS]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            docker pull ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION}
+                        '
+                    """
+
                     sh """
                         ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
                             SERVICE_NAME=${SERVICE_NAME} \\
