@@ -13,7 +13,7 @@ pipeline {
         DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${SERVICE_NAME}"
         DOCKER_HOST_NON_SECURE_PORT=18080
 
-        JENKINS_SSH_PK = '/var/jenkins_home/.ssh/jenkins_rsa'
+        JENKINS_SSH_PK = '.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'spring-thief-apps'
 
         DEPLOY_HOST = "wien@192.168.45.61"
@@ -75,6 +75,7 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
                             SERVICE_NAME=${SERVICE_NAME} \\
                             SERVICE_VERSION=${SERVICE_VERSION} \\
+                            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\
                             DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\
                             docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} down
                         '
@@ -84,6 +85,7 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
                             SERVICE_NAME=${SERVICE_NAME} \\
                             SERVICE_VERSION=${SERVICE_VERSION} \\
+                            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\
                             DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\
                             docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} up -d
                         '
