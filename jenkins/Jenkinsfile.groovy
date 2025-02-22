@@ -13,7 +13,7 @@ pipeline {
         DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${SERVICE_NAME}"
         DOCKER_HOST_NON_SECURE_PORT=18080
 
-        JENKINS_SSH_PK = '.ssh/jenkins_rsa'
+        JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'spring-thief-apps'
 
         DEPLOY_HOST = "wien@192.168.45.61"
