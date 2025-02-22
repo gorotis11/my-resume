@@ -37,7 +37,7 @@ pipeline {
         }
         stage('gradle build') {
             steps {
-                sh './gradlew build'
+                sh './gradlew bootJar'
             }
         }
         stage('build docker image') {
