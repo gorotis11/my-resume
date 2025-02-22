@@ -16,10 +16,6 @@ java {
 	}
 }
 
-tasks.named("bootJar") {
-	mainClass.set("com.example.MyResumeApplication")
-}
-
 repositories {
 	mavenCentral()
 }
