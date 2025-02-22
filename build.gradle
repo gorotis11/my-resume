@@ -16,6 +16,10 @@ java {
 	}
 }
 
+tasks.named("bootJar") {
+	mainClass.set("com.wien.my-resume.MyResumeApplication")
+}
+
 repositories {
 	mavenCentral()
 }
