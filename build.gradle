@@ -17,7 +17,7 @@ java {
 }
 
 tasks.named("bootJar") {
-	mainClass.set("com.wien.my-resume.MyResumeApplication")
+	mainClass.set("com.spring_thief.my_resume.MyResumeApplication")
 }
 
 repositories {
