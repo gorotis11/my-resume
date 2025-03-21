@@ -8,7 +8,6 @@ pipeline {
         GIT_REPOSITORY_URL = "https://github.com/gorotis11/${SERVICE_NAME}"
         GIT_CREDENTIALS = 'github-token'
 
-        DOCKER_OS = "linux/amd64"
         DOCKER_REGISTRY = 'instance-20250318-1146:5000'
         DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${SERVICE_NAME}"
         DOCKER_HOST_NON_SECURE_PORT=18080
@@ -42,7 +41,7 @@ pipeline {
         }
         stage('build docker image') {
             steps {
-                sh "docker build --platform ${DOCKER_OS} -t ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION} -f docker/Dockerfile ."
+                sh "docker build -t ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION} -f docker/Dockerfile ."
             }
         }
         stage('tag docker image') {
