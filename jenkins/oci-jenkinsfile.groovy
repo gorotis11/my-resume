@@ -77,6 +77,7 @@ pipeline {
         stage('down docker container') {
             steps {
                 sh """
+                    sudo -u resume \\\\
                     SERVICE_NAME=${SERVICE_NAME} \\\\
                     SERVICE_VERSION=${SERVICE_VERSION} \\\\
                     DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
@@ -88,6 +89,7 @@ pipeline {
         stage('up docker container') {
             steps {
                 sh """
+                    sudo -u resume \\\\\\\\
                     SERVICE_NAME=${SERVICE_NAME} \\\\
                     SERVICE_VERSION=${SERVICE_VERSION} \\\\
                     DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
