@@ -61,17 +61,17 @@ pipeline {
         }
         stage('remove service directory') {
             steps {
-                sh "rm -rf ${DEPLOY_UPLOAD_PATH}"
+                sh "sudo -u resume rm -rf ${DEPLOY_UPLOAD_PATH}"
             }
         }
         stage('make service directory') {
             steps {
-                sh "mkdir -p ${DEPLOY_UPLOAD_PATH}"
+                sh "sudo -u resume mkdir -p ${DEPLOY_UPLOAD_PATH}"
             }
         }
         stage('copy service file') {
             steps {
-                sh "cp docker/docker-compose.yml ${DEPLOY_UPLOAD_PATH}/docker-compose.yml"
+                sh "sudo -u resume cp docker/docker-compose.yml ${DEPLOY_UPLOAD_PATH}/docker-compose.yml"
             }
         }
         stage('down docker container') {
