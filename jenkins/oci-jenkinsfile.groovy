@@ -15,7 +15,7 @@ pipeline {
         JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'jenkins-ssh'
 
-        DEPLOY_HOST = "wien@192.168.45.61"
+        DEPLOY_HOST = "resume@localhost"
         DEPLOY_UPLOAD_PATH = "/home/resume/${SERVICE_NAME}"
         DEPLOY_DOCKER_COMPOSE_FILE_NAME = "docker-compose.yml"
     }
