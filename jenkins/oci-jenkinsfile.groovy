@@ -10,7 +10,7 @@ pipeline {
 
         DOCKER_REGISTRY = 'instance-20250318-1146:5000'
         DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${SERVICE_NAME}"
-        DOCKER_HOST_NON_SECURE_PORT=18080
+        DOCKER_HOST_NON_SECURE_PORT=28080
 
         JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'jenkins-ssh'
