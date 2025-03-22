@@ -77,24 +77,22 @@ pipeline {
         stage('down docker container') {
             steps {
                 sh """
-                    sudo -u resume \\\\
                     SERVICE_NAME=${SERVICE_NAME} \\\\
                     SERVICE_VERSION=${SERVICE_VERSION} \\\\
                     DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
                     DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\\\
-                    docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} down
+                    sudo -u resume docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} down
                 """
             }
         }
         stage('up docker container') {
             steps {
                 sh """
-                    sudo -u resume \\\\\\\\
                     SERVICE_NAME=${SERVICE_NAME} \\\\
                     SERVICE_VERSION=${SERVICE_VERSION} \\\\
                     DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
                     DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\\\
-                    docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} up -d
+                    sudo -u resume docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} up -d
                 """
             }
         }
