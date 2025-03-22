@@ -15,6 +15,7 @@ pipeline {
         JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'spring-thief-apps'
 
+        DEPLOY_HOST = "wien@192.168.45.61"
         DEPLOY_UPLOAD_PATH = "/home/resume/${SERVICE_NAME}"
         DEPLOY_DOCKER_COMPOSE_FILE_NAME = "docker-compose.yml"
     }
@@ -59,41 +60,56 @@ pipeline {
                 sh "docker system prune -f"
             }
         }
-        stage('remove service directory') {
+
+
+        stage('upload docker-compose file') {
             steps {
-                sh "sudo -u resume rm -rf ${DEPLOY_UPLOAD_PATH}"
+                sshagent (credentials: [JENKINS_SSH_CREDENTIALS]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            rm -rf ${DEPLOY_UPLOAD_PATH}
+                            mkdir -p ${DEPLOY_UPLOAD_PATH}
+                        '
+                    """
+                    sh "scp -i ${JENKINS_SSH_PK} docker/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} ${DEPLOY_HOST}:${DEPLOY_UPLOAD_PATH}"
+                }
             }
         }
-        stage('make service directory') {
+        stage('deploy docker container') {
             steps {
-                sh "sudo -u resume mkdir -p ${DEPLOY_UPLOAD_PATH}"
-            }
-        }
-        stage('copy service file') {
-            steps {
-                sh "sudo -u resume cp docker/docker-compose.yml ${DEPLOY_UPLOAD_PATH}/docker-compose.yml"
-            }
-        }
-        stage('down docker container') {
-            steps {
-                sh """
-                    SERVICE_NAME=${SERVICE_NAME} \\\\
-                    SERVICE_VERSION=${SERVICE_VERSION} \\\\
-                    DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
-                    DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\\\
-                    sudo -u resume docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} down
-                """
-            }
-        }
-        stage('up docker container') {
-            steps {
-                sh """
-                    SERVICE_NAME=${SERVICE_NAME} \\\\
-                    SERVICE_VERSION=${SERVICE_VERSION} \\\\
-                    DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\\\
-                    DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\\\
-                    sudo -u resume docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} up -d
-                """
+                sshagent (credentials: [JENKINS_SSH_CREDENTIALS]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            docker pull ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION}
+                        '
+                    """
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            docker system prune -f
+                        '
+                    """
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            SERVICE_NAME=${SERVICE_NAME} \\
+                            SERVICE_VERSION=${SERVICE_VERSION} \\
+                            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\
+                            DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\
+                            docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} down
+                        '
+                    """
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                            SERVICE_NAME=${SERVICE_NAME} \\
+                            SERVICE_VERSION=${SERVICE_VERSION} \\
+                            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME} \\
+                            DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT} \\
+                            docker compose -f ${DEPLOY_UPLOAD_PATH}/${DEPLOY_DOCKER_COMPOSE_FILE_NAME} -p ${SERVICE_NAME} up -d
+                        '
+                    """
+                }
             }
         }
     }
