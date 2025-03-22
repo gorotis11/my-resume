@@ -9,5 +9,5 @@ services:
             - SERVICE_VERSION=${SERVICE_VERSION}
             - DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT}
         ports:
-            - ${DOCKER_HOST_NON_SECURE_PORT}:18080
+            - ${DOCKER_HOST_NON_SECURE_PORT}:28080
         restart: always

@@ -8,7 +8,7 @@ spring:
         suffix: .html
         check-template-location: true
 server:
-  port: 18080
+  port: 28080
   servlet:
     context-path: /
     session:
