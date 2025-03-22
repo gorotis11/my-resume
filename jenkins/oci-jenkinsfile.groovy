@@ -13,7 +13,7 @@ pipeline {
         DOCKER_HOST_NON_SECURE_PORT=18080
 
         JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
-        JENKINS_SSH_CREDENTIALS = 'spring-thief-apps'
+        JENKINS_SSH_CREDENTIALS = 'jenkins-ssh'
 
         DEPLOY_HOST = "wien@192.168.45.61"
         DEPLOY_UPLOAD_PATH = "/home/resume/${SERVICE_NAME}"
