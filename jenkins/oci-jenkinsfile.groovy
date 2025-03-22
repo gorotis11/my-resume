@@ -15,8 +15,7 @@ pipeline {
         JENKINS_SSH_PK = '~/.ssh/jenkins_rsa'
         JENKINS_SSH_CREDENTIALS = 'spring-thief-apps'
 
-        DEPLOY_HOST = "wien@192.168.45.61"
-        DEPLOY_UPLOAD_PATH = "~/${SERVICE_NAME}/"
+        DEPLOY_UPLOAD_PATH = "/home/resume/${SERVICE_NAME}"
         DEPLOY_DOCKER_COMPOSE_FILE_NAME = "docker-compose.yml"
     }
 
@@ -72,7 +71,7 @@ pipeline {
         }
         stage('copy service file') {
             steps {
-                sh "cp docker/docker-compose.yml ~/${DEPLOY_UPLOAD_PATH}/docker-compose.yml"
+                sh "cp docker/docker-compose.yml ${DEPLOY_UPLOAD_PATH}/docker-compose.yml"
             }
         }
         stage('down docker container') {
