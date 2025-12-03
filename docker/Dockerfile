@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM eclipse-temurin:21-jdk
 # or
 # FROM openjdk:8-jdk-alpine
 # FROM openjdk:11-jdk-alpine
