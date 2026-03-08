@@ -1,15 +1,32 @@
 spring:
-    application:
-        name: my-resume
-    thymeleaf:
-        prefix: classpath:templates/
-        cache: false
-        mode: HTML
-        suffix: .html
-        check-template-location: true
+  application:
+    name: my-resume
+  thymeleaf:
+    prefix: classpath:templates/
+    cache: false
+    mode: HTML
+    suffix: .html
+    check-template-location: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,prometheus,metrics"
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
 server:
   port: 28080
   servlet:
     context-path: /
     session:
       timeout: 600s
+logging:
+  file:
+    path: ./logs
+    name: my-resume
+  config:
+    max-history: 7

@@ -1,11 +1,6 @@
 FROM eclipse-temurin:21-jdk
-# or
-# FROM openjdk:8-jdk-alpine
-# FROM openjdk:11-jdk-alpine
 
 CMD ["./gradlew", "clean", "build"]
-# or Maven
-# CMD ["./mvnw", "clean", "package"]
 
 ARG JAR_FILE=build/libs/*-SNAPSHOT.jar
 # or Maven
@@ -14,4 +9,6 @@ COPY ${JAR_FILE} app.jar
 
 EXPOSE 28080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN mkdir /logs && chmod 777 /logs
+
+ENTRYPOINT ["java", "-Xmx512M", "-Xms256M", "-jar", "app.jar"]
