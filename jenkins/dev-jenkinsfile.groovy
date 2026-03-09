@@ -24,7 +24,8 @@ pipeline {
 
     environment {
         // 아까 설치한 로컬 레지스트리 주소
-        REGISTRY = "local-registry.registry.svc.cluster.local:5000"
+        DOCKER_FILE = "docker/Dockerfile"
+        REGISTRY = "local-registry-docker-registry.registry.svc.cluster.local:5000"
         IMAGE_NAME = "my-resume"
         TAG = "latest"
     }
@@ -44,7 +45,7 @@ pipeline {
                     sh """
                     /kaniko/executor \
                     --context=\${WORKSPACE} \
-                    --dockerfile=docker/Dockerfile \
+                    --dockerfile=\${DOCKER_FILE}\
                     --destination=\${REGISTRY}/\${IMAGE_NAME}:\${TAG} \
                     --insecure \
                     --skip-tls-verify \
