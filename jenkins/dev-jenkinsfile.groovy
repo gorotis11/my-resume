@@ -44,7 +44,7 @@ pipeline {
                     sh """
                     /kaniko/executor \
                     --context=\${WORKSPACE} \
-                    --dockerfile=Dockerfile \
+                    --dockerfile=docker/Dockerfile \
                     --destination=\${REGISTRY}/\${IMAGE_NAME}:\${TAG} \
                     --insecure \
                     --skip-tls-verify \
