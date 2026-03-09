@@ -47,8 +47,6 @@ pipeline {
                     --context=\${WORKSPACE} \
                     --dockerfile=\${DOCKER_FILE}\
                     --destination=\${REGISTRY}/\${IMAGE_NAME}:\${TAG} \
-                    --insecure \
-                    --skip-tls-verify \
                     --cache=true
                     """
                 }
