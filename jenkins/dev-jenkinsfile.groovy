@@ -25,7 +25,7 @@ pipeline {
     environment {
         // 아까 설치한 로컬 레지스트리 주소
         DOCKER_FILE = "docker/Dockerfile"
-        REGISTRY = "local-registry-docker-registry.registry.svc.cluster.local:5000"
+        REGISTRY = "local-registry.registry.svc.cluster.local:443"
         IMAGE_NAME = "my-resume"
         TAG = "latest"
     }
