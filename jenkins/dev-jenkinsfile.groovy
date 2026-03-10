@@ -2,57 +2,67 @@ pipeline {
     agent {
         kubernetes {
             yaml """
-                apiVersion: v1
-                kind: Pod
-                spec:
-                  containers:
-                  - name: kaniko
-                    image: gcr.io/kaniko-project/executor:debug
-                    command:
-                    - sleep
-                    args:
-                    - 9999999
-                    volumeMounts:
-                    - name: registry-auth
-                      mountPath: /kaniko/.docker
-                  volumes:
-                  - name: registry-auth
-                    emptyDir: {}
-                """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command: ["/busybox/cat"]
+    tty: true
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+"""
         }
     }
 
     environment {
-        // 아까 설치한 로컬 레지스트리 주소
-        DOCKER_FILE = "docker/Dockerfile"
         REGISTRY = "local-registry.registry.svc.cluster.local:443"
         IMAGE_NAME = "my-resume"
-        TAG = "latest"
+        DOCKERFILE = "docker/Dockerfile"
+        // [개선] 브랜치와 빌드 번호를 조합한 동적 태그
+        REPO_TAG = "${env.BRANCH_NAME ?: 'dev'}-${env.BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // GitHub에서 소스 코드 가져오기
+                // Jenkins 에이전트의 기본 컨테이너(jnlp)에서 소스를 땡겨옵니다.
                 checkout scm
             }
         }
 
         stage('Build and Push') {
             steps {
+                // [중요] Checkout 받은 소스가 있는 ${WORKSPACE}를 그대로 사용합니다.
                 container('kaniko') {
-                    // Kaniko 실행: Docker 데몬 없이 이미지 빌드 및 푸시
                     sh """
                     /kaniko/executor \
-                    --context=\${WORKSPACE} \
-                    --dockerfile=\${DOCKER_FILE}\
-                    --destination=\${REGISTRY}/\${IMAGE_NAME}:\${TAG} \
+                    --context=${WORKSPACE} \
+                    --dockerfile=${DOCKERFILE} \
+                    --destination=${REGISTRY}/${IMAGE_NAME}:${REPO_TAG} \
+                    --destination=${REGISTRY}/${IMAGE_NAME}:latest \
                     --skip-tls-verify \
                     --insecure \
-                    --cache=true
+                    --cache=true \
+                    --cache-repo=${REGISTRY}/kaniko-cache
                     """
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Successfully pushed: ${IMAGE_NAME}:${REPO_TAG}"
+        }
+        failure {
+            echo "Build failed. Check Jenkins console logs."
         }
     }
 }
