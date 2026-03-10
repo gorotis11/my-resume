@@ -24,7 +24,7 @@ spec:
     environment {
         MY_BUILD_NUM = "${env.BUILD_NUMBER}"
         MY_JOB_NAME  = "kaniko-build-${env.BUILD_NUMBER}"
-        CURRENT_BRANCH = "${env.BRANCH_NAME ?: 'main'}"
+        CURRENT_BRANCH = "dev"
     }
 
     stages {
