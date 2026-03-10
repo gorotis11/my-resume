@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kaniko-build-t1
+  name: kaniko-build-${BUILD_NUMBER}
 spec:
   template:
     spec:
@@ -9,17 +9,16 @@ spec:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:debug
           args:
-            - "--context=git://github.com/gorotis11/my-resume.git#refs/heads/dev"
+            # 이전 설정의 Registry, Dockerfile 경로 반영
+            - "--context=git://github.com/gorotis11/my-resume.git#refs/heads/${GIT_BRANCH}"
             - "--dockerfile=docker/Dockerfile"
-            - "--destination=local-registry.registry.svc.cluster.local:443/my-resume:t1"
+            - "--destination=local-registry.registry.svc.cluster.local:443/my-resume:${BUILD_NUMBER}"
             - "--skip-tls-verify"
             - "--insecure"
+            - "--cache=true"
           resources:
-            requests:
-              cpu: "500m"
-              memory: "512Mi"
             limits:
               cpu: "1000m"
-              memory: "1Gi" # 메모리 부족으로 인한 OOM 방지
+              memory: "1Gi"
       restartPolicy: Never
   backoffLimit: 0

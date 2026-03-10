@@ -5,44 +5,47 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  serviceAccountName: default
+  automountServiceAccountToken: true
   containers:
   - name: kubectl
     image: bitnami/kubectl:latest
     command: ["cat"]
     tty: true
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "200m"
-        memory: "256Mi"
 """
         }
     }
 
     environment {
-        BUILD_NUMBER = "${env.BUILD_NUMBER}"
-        JOB_NAME  = "kaniko-build-${env.BUILD_NUMBER}"
-        CURRENT_BRANCH = "dev"
+        // Multibranch가 아니더라도 'dev'로 기본값 설정
+        CURRENT_BRANCH = "${env.BRANCH_NAME ?: 'dev'}"
+        MY_BUILD_NUM   = "${env.BUILD_NUMBER}"
+        MY_JOB_NAME    = "kaniko-build-${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Build & Push') {
+        stage('Deploy Kaniko Job') {
             steps {
                 container('kubectl') {
                     script {
-                        echo "Target Branch: ${CURRENT_BRANCH}"
+                        echo "Building Branch: ${CURRENT_BRANCH}"
 
-                        sh "kubectl auth can-i create jobs"
-                        sh "kubectl auth can-i apply -f k8s/kaniko-job.yaml"
+                        // 1. YAML 파일 내 변수 치환 (${} 형태를 치환하기 위해 역슬래시 사용)
+                        sh """
+                        sed -e 's/\\\${BUILD_NUMBER}/${MY_BUILD_NUM}/g' \
+                            -e 's/\\\${GIT_BRANCH}/${CURRENT_BRANCH}/g' \
+                            k8s/kaniko-job.yaml > resolved-job.yaml
+                        """
 
-                        // sed 명령어로 BUILD_NUMBER와 GIT_BRANCH를 모두 치환합니다.
-                        sh """kubectl apply -f k8s/kaniko-job.yaml"""
+                        // 2. Job 생성
+                        sh "kubectl apply -f resolved-job.yaml"
 
-                        // 로그 모니터링 및 완료 대기
-                        sh "kubectl logs -f job/${JOB_NAME} &"
-                        sh "kubectl wait --for=condition=complete job/${JOB_NAME} --timeout=900s"
+                        // 3. 빌드 로그 실시간 모니터링 (백그라운드 실행)
+                        sh "kubectl logs -f job/${MY_JOB_NAME} &"
+
+                        // 4. Job 완료 시까지 대기 (최대 15분)
+                        echo "Waiting for Kaniko Job to complete..."
+                        sh "kubectl wait --for=condition=complete job/${MY_JOB_NAME} --timeout=900s"
                     }
                 }
             }
@@ -51,14 +54,14 @@ spec:
 
     post {
         success {
-            echo "Successfully pushed image: my-resume:${BUILD_NUMBER}"
-            // 배포 단계로 넘어가기 전, 성공한 Job은 깔끔하게 삭제
+            echo "Build Success: Image pushed to registry."
             container('kubectl') {
-                sh "kubectl delete job ${JOB_NAME}"
+                // 성공 시 Job 리소스 삭제 (클러스터 정리)
+                sh "kubectl delete job ${MY_JOB_NAME}"
             }
         }
         failure {
-            echo "Build failed. Check 'kubectl logs job/${JOB_NAME}' for details."
+            echo "Build Failed. Please check the logs above."
         }
     }
 }
