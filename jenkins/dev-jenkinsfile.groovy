@@ -2,66 +2,57 @@ pipeline {
     agent {
         kubernetes {
             yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  serviceAccountName: default
-  automountServiceAccountToken: true
-  containers:
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ["cat"]
-    tty: true
-"""
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: kaniko
+                    image: gcr.io/kaniko-project/executor:debug
+                    command:
+                    - sleep
+                    args:
+                    - 9999999
+                    volumeMounts:
+                    - name: registry-auth
+                      mountPath: /kaniko/.docker
+                  volumes:
+                  - name: registry-auth
+                    emptyDir: {}
+                """
         }
     }
 
     environment {
-        // Multibranch가 아니더라도 'dev'로 기본값 설정
-        CURRENT_BRANCH = "${env.BRANCH_NAME ?: 'dev'}"
-        MY_BUILD_NUM   = "${env.BUILD_NUMBER}"
-        MY_JOB_NAME    = "kaniko-build-${env.BUILD_NUMBER}"
+        // 아까 설치한 로컬 레지스트리 주소
+        DOCKER_FILE = "docker/Dockerfile"
+        REGISTRY = "local-registry.registry.svc.cluster.local:443"
+        IMAGE_NAME = "my-resume"
+        TAG = "latest"
     }
 
     stages {
-        stage('Deploy Kaniko Job') {
+        stage('Checkout') {
             steps {
-                container('kubectl') {
-                    script {
-                        echo "Building Branch: ${CURRENT_BRANCH}"
+                // GitHub에서 소스 코드 가져오기
+                checkout scm
+            }
+        }
 
-                        // 1. YAML 파일 내 변수 치환 (${} 형태를 치환하기 위해 역슬래시 사용)
-                        sh """
-                        sed -e 's/\\\${BUILD_NUMBER}/${MY_BUILD_NUM}/g' \
-                            -e 's/\\\${GIT_BRANCH}/${CURRENT_BRANCH}/g' \
-                            k8s/kaniko-job.yaml > resolved-job.yaml
-                        """
-
-                        // 2. Job 생성
-                        sh "kubectl apply -f resolved-job.yaml"
-
-                        // 3. 빌드 로그 실시간 모니터링 (백그라운드 실행)
-                        sh "kubectl logs -f job/${MY_JOB_NAME} &"
-
-                        // 4. Job 완료 시까지 대기 (최대 15분)
-                        echo "Waiting for Kaniko Job to complete..."
-                        sh "kubectl wait --for=condition=complete job/${MY_JOB_NAME} --timeout=900s"
-                    }
+        stage('Build and Push') {
+            steps {
+                container('kaniko') {
+                    // Kaniko 실행: Docker 데몬 없이 이미지 빌드 및 푸시
+                    sh """
+                    /kaniko/executor \
+                    --context=\${WORKSPACE} \
+                    --dockerfile=\${DOCKER_FILE}\
+                    --destination=\${REGISTRY}/\${IMAGE_NAME}:\${TAG} \
+                    --skip-tls-verify \
+                    --insecure \
+                    --cache=true
+                    """
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Build Success: Image pushed to registry."
-            container('kubectl') {
-                // 성공 시 Job 리소스 삭제 (클러스터 정리)
-                sh "kubectl delete job ${MY_JOB_NAME}"
-            }
-        }
-        failure {
-            echo "Build Failed. Please check the logs above."
         }
     }
 }
