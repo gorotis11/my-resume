@@ -8,13 +8,15 @@ pipeline {
                   containers:
                   - name: kaniko
                     image: gcr.io/kaniko-project/executor:debug
-                    command:
-                    - sleep
-                    args:
-                    - 9999999
+                    command: ["sleep"]
+                    args: ["9999999"]
                     volumeMounts:
                     - name: registry-auth
                       mountPath: /kaniko/.docker
+                  - name: kubectl
+                    image: bitnami/kubectl:latest
+                    command: ["sleep"]
+                    args: ["9999999"]
                   volumes:
                   - name: registry-auth
                     emptyDir: {}
