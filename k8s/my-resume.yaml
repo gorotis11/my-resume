@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-resume
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-resume
+  template:
+    metadata:
+      labels:
+        app: my-resume
+    spec:
+      containers:
+        - name: my-resume
+          image: local-registry.registry.svc.cluster.local:443/my-resume:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 28080
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "250m"
+            limits:
+              memory: "600Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: log-volume
+              mountPath: /logs
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /home/wien/k8s/my-resume/logs
+            type: DirectoryOrCreate
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-resume
+  labels:
+    app: my-resume
+spec:
+  type: ClusterIP
+  selector:
+    app: my-resume
+  ports:
+    - name: my-resume
+      protocol: TCP
+      port: 80
+      targetPort: 28080

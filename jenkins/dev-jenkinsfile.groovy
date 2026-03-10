@@ -54,5 +54,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to K8s') {
+            steps {
+                container('kubectl') {
+                    script {
+                        // 1. 배포용 YAML 파일 적용 (미리 작성된 manifest가 프로젝트에 있어야 함)
+                        sh "kubectl apply -f k8s/deployment.yaml"
+
+                        // 2. 이미지가 새로 푸시되었으므로 강제 재시작 (Rolling Update 트리거)
+                        sh "kubectl rollout restart deployment my-resume -n default"
+
+                        // 3. 배포 상태 확인
+                        sh "kubectl rollout status deployment my-resume -n default"
+                    }
+                }
+            }
+        }
     }
 }
