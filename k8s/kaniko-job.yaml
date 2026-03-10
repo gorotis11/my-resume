@@ -9,8 +9,7 @@ spec:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:debug
           args:
-            # [수정] Git 저장소에서 직접 소스를 가져와 빌드 (볼륨 마운트 제거)
-            - "--context=https://github.com/gorotis11/my-resume.git#refs/heads/dev"
+            - "--context=git://github.com/gorotis11/my-resume.git#refs/heads/dev"
             - "--dockerfile=docker/Dockerfile"
             - "--destination=local-registry.registry.svc.cluster.local:443/my-resume:t1"
             - "--skip-tls-verify"
