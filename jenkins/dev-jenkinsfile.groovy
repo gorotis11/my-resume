@@ -22,8 +22,8 @@ spec:
     }
 
     environment {
-        MY_BUILD_NUM = "${env.BUILD_NUMBER}"
-        MY_JOB_NAME  = "kaniko-build-${env.BUILD_NUMBER}"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        JOB_NAME  = "kaniko-build-${env.BUILD_NUMBER}"
         CURRENT_BRANCH = "dev"
     }
 
@@ -32,18 +32,18 @@ spec:
             steps {
                 container('kubectl') {
                     script {
-                        echo "Target Branch: ${MY_BRANCH}"
+                        echo "Target Branch: ${CURRENT_BRANCH}"
 
                         // sed 명령어로 BUILD_NUMBER와 GIT_BRANCH를 모두 치환합니다.
                         sh """
-                        sed -e "s/\\\\\\\${BUILD_NUMBER}/${MY_BUILD_NUM}/g" \
+                        sed -e "s/\\\\\\\${BUILD_NUMBER}/${BUILD_NUMBER}/g" \
                             -e "s/\\\\\\\${GIT_BRANCH}/${CURRENT_BRANCH}/g" \
                             k8s/kaniko-job.yaml | kubectl apply -f -
                         """
 
                         // 로그 모니터링 및 완료 대기
-                        sh "kubectl logs -f job/${MY_JOB_NAME} &"
-                        sh "kubectl wait --for=condition=complete job/${MY_JOB_NAME} --timeout=900s"
+                        sh "kubectl logs -f job/${JOB_NAME} &"
+                        sh "kubectl wait --for=condition=complete job/${JOB_NAME} --timeout=900s"
                     }
                 }
             }
@@ -52,14 +52,14 @@ spec:
 
     post {
         success {
-            echo "Successfully pushed image: my-resume:${MY_BUILD_NUM}"
+            echo "Successfully pushed image: my-resume:${BUILD_NUMBER}"
             // 배포 단계로 넘어가기 전, 성공한 Job은 깔끔하게 삭제
             container('kubectl') {
-                sh "kubectl delete job ${MY_JOB_NAME}"
+                sh "kubectl delete job ${JOB_NAME}"
             }
         }
         failure {
-            echo "Build failed. Check 'kubectl logs job/${MY_JOB_NAME}' for details."
+            echo "Build failed. Check 'kubectl logs job/${JOB_NAME}' for details."
         }
     }
 }
