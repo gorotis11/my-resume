@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-build-${BUILD_NUMBER}
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:debug
+          args:
+            - "--context=git://github.com/gorotis11/my-resume.git#refs/heads/dev"
+            - "--dockerfile=docker/Dockerfile"
+            - "--destination=local-registry.registry.svc.cluster.local:443/my-resume:latest"
+            - "--skip-tls-verify"
+            - "--insecure"
+      restartPolicy: Never
+  backoffLimit: 0
