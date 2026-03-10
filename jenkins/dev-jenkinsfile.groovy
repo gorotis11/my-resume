@@ -34,6 +34,9 @@ spec:
                     script {
                         echo "Target Branch: ${CURRENT_BRANCH}"
 
+                        sh "kubectl auth can-i create jobs"
+                        sh "kubectl auth can-i apply -f k8s/kaniko-job.yaml"
+
                         // sed 명령어로 BUILD_NUMBER와 GIT_BRANCH를 모두 치환합니다.
                         sh """kubectl apply -f k8s/kaniko-job.yaml"""
 
