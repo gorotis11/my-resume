@@ -35,11 +35,7 @@ spec:
                         echo "Target Branch: ${CURRENT_BRANCH}"
 
                         // sed 명령어로 BUILD_NUMBER와 GIT_BRANCH를 모두 치환합니다.
-                        sh """
-                        sed -e "s/\\\\\\\${BUILD_NUMBER}/${BUILD_NUMBER}/g" \
-                            -e "s/\\\\\\\${GIT_BRANCH}/${CURRENT_BRANCH}/g" \
-                            k8s/kaniko-job.yaml | kubectl apply -f -
-                        """
+                        sh """kubectl apply -f k8s/kaniko-job.yaml"""
 
                         // 로그 모니터링 및 완료 대기
                         sh "kubectl logs -f job/${JOB_NAME} &"
