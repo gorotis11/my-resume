@@ -12,9 +12,6 @@ public class MainController {
 
     @RequestMapping("/")
     public String root() {
-        log.info("일반 INFO 로그가 생성되었습니다.");
-        log.warn("경고 WARN 로그가 생성되었습니다.");
-        log.error("!!! 에러 ERROR 로그가 생성되었습니다 !!!");
         return "redirect:/resume";
     }
 
