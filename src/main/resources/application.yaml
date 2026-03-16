@@ -19,7 +19,7 @@ management:
     tags:
       application: ${spring.application.name}
 server:
-  port: 28080
+  port: 8080
   servlet:
     context-path: /
     session:

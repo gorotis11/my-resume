@@ -18,7 +18,7 @@ spec:
           image: local-registry.registry.svc.cluster.local:443/my-resume:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 28080
+            - containerPort: 8080
           resources:
             requests:
               memory: "300Mi"
@@ -51,4 +51,4 @@ spec:
     - name: my-resume
       protocol: TCP
       port: 80
-      targetPort: 28080
+      targetPort: 8080
