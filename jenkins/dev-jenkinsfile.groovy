@@ -17,6 +17,16 @@ spec:
       limits:
         cpu: "1000m"
         memory: "2Gi"
+    volumeMounts:
+    - name: docker-config
+      mountPath: /kaniko/.docker
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: harbor-registry-secret
+      items:
+      - key: .dockerconfigjson
+        path: config.json
 """
         }
     }
