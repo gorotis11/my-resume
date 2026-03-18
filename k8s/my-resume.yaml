@@ -13,6 +13,8 @@ spec:
       labels:
         app: my-resume
     spec:
+      imagePullSecrets:
+        - name: harbor-pull-secret
       containers:
         - name: my-resume
           image: dev-harbor.beans-atelier.org/my-resume/my-resume:latest
