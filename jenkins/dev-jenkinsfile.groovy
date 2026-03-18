@@ -50,11 +50,14 @@ spec:
         stage('Get Version') {
             steps {
                 script {
-                    sh "git fetch --tags"
+                    sh "git fetch --unshallow --tags || git fetch --tags"
                     env.REPO_TAG = sh(
                         returnStdout: true,
-                        script: "git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1'"
+                        script: "git tag --sort=-v:refname | head -1 | tr -d '\\n'"
                     ).trim()
+                    if (!env.REPO_TAG) {
+                        env.REPO_TAG = '0.0.1'
+                    }
                 }
                 echo "버전: ${env.REPO_TAG}"
             }
