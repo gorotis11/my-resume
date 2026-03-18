@@ -37,14 +37,25 @@ spec:
         HARBOR_PROJECT = "my-resume"
         IMAGE_NAME = "my-resume"
         DOCKERFILE = "docker/Dockerfile"
-        // 브랜치와 빌드 번호를 조합한 동적 태그
-        REPO_TAG = "${env.BRANCH_NAME ?: 'dev'}-${env.BUILD_NUMBER}"
+        REPO_TAG = "" // Git tag에서 동적으로 설정
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Get Version') {
+            steps {
+                script {
+                    env.REPO_TAG = sh(
+                        returnStdout: true,
+                        script: "git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1'"
+                    ).trim()
+                }
+                echo "버전: ${env.REPO_TAG}"
             }
         }
 
