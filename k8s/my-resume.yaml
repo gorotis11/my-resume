@@ -69,7 +69,7 @@ spec:
   tls:
     - hosts:
         - dev-resume.beans-atelier.org
-      secretName: my-resume-tls
+      secretName: my-resume-tls-secret
   rules:
     - host: dev-resume.beans-atelier.org
       http:
