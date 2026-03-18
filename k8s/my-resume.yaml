@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: my-resume
-          image: local-registry.registry.svc.cluster.local:443/my-resume:latest
+          image: harbor-core.harbor.svc.cluster.local/my-resume/my-resume:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
