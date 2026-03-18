@@ -1,0 +1,66 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command: ["/busybox/cat"]
+    tty: true
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
+"""
+        }
+    }
+
+    environment {
+        // Harbor 레지스트리 설정
+        HARBOR_URL = "dev-harbor.beans-atelier.org"
+        HARBOR_PROJECT = "my-resume"
+        IMAGE_NAME = "my-resume"
+        DOCKERFILE = "docker/Dockerfile"
+        // 브랜치와 빌드 번호를 조합한 동적 태그
+        REPO_TAG = "${env.BRANCH_NAME ?: 'dev'}-${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Push to Harbor') {
+            steps {
+                container('kaniko') {
+                    sh """
+                    /kaniko/executor \
+                    --context=${WORKSPACE} \
+                    --dockerfile=${DOCKERFILE} \
+                    --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${REPO_TAG} \
+                    --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:latest \
+                    --cache=true \
+                    --cache-repo=${HARBOR_URL}/${HARBOR_PROJECT}/kaniko-cache
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Harbor 푸시 성공: ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${REPO_TAG}"
+        }
+        failure {
+            echo "빌드 실패. Jenkins 콘솔 로그를 확인하세요."
+        }
+    }
+}
