@@ -37,7 +37,6 @@ spec:
         HARBOR_PROJECT = "my-resume"
         IMAGE_NAME = "my-resume"
         DOCKERFILE = "docker/Dockerfile"
-        REPO_TAG = "" // Git tag에서 동적으로 설정
     }
 
     stages {
@@ -67,7 +66,7 @@ spec:
                     /kaniko/executor \
                     --context=${WORKSPACE} \
                     --dockerfile=${DOCKERFILE} \
-                    --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${REPO_TAG} \
+                    --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${env.REPO_TAG} \
                     --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:latest \
                     --skip-tls-verify \
                     --insecure \
@@ -81,7 +80,7 @@ spec:
 
     post {
         success {
-            echo "Harbor 푸시 성공: ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${REPO_TAG}"
+            echo "Harbor 푸시 성공: ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${env.REPO_TAG}"
         }
         failure {
             echo "빌드 실패. Jenkins 콘솔 로그를 확인하세요."
