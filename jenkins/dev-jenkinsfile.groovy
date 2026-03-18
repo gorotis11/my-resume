@@ -23,7 +23,7 @@ spec:
 
     environment {
         // Harbor 레지스트리 설정
-        HARBOR_URL = "dev-harbor.beans-atelier.org"
+        HARBOR_URL = "harbor-core.harbor.svc.cluster.local"
         HARBOR_PROJECT = "my-resume"
         IMAGE_NAME = "my-resume"
         DOCKERFILE = "docker/Dockerfile"
@@ -47,6 +47,8 @@ spec:
                     --dockerfile=${DOCKERFILE} \
                     --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${REPO_TAG} \
                     --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:latest \
+                    --skip-tls-verify \
+                    --insecure \
                     --cache=true \
                     --cache-repo=${HARBOR_URL}/${HARBOR_PROJECT}/kaniko-cache
                     """
