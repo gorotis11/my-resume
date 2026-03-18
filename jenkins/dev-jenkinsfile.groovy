@@ -50,6 +50,7 @@ spec:
         stage('Get Version') {
             steps {
                 script {
+                    sh "git fetch --tags"
                     env.REPO_TAG = sh(
                         returnStdout: true,
                         script: "git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1'"
