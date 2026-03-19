@@ -8,22 +8,18 @@ spec:
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
-    command: ["/busybox/sleep"]
-    args: ["9999999"]
+    command: ["/busybox/cat"]
     tty: true
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
     volumeMounts:
     - name: docker-config
       mountPath: /kaniko/.docker
-  
-  - name: jnlp
-    # [수정] 복잡한 변수들을 다 지우세요. 플러그인이 자동으로 넣어줍니다.
-    env:
-    - name: JENKINS_URL
-      value: "https://dev-jenkins.beans-atelier.org/"
-    - name: JENKINS_TUNNEL
-      # 이 주소가 실제 서비스 이름과 맞는지 'kubectl get svc -n jenkins'로 꼭 확인하세요!
-      value: "jenkins.jenkins.svc.cluster.local:50000"
-      
   volumes:
   - name: docker-config
     secret:
