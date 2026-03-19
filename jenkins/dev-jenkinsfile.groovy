@@ -1,7 +1,6 @@
 pipeline {
     agent {
         kubernetes {
-            tunnel "jenkins-agent.jenkins.svc.cluster.local:50000"
             yaml """
 apiVersion: v1
 kind: Pod
@@ -21,6 +20,14 @@ spec:
     volumeMounts:
     - name: docker-config
       mountPath: /kaniko/.docker
+      
+  - name: jnlp
+    env:
+    - name: JENKINS_URL
+      value: "https://dev-jenkins.beans-atelier.org/"
+    - name: JENKINS_TUNNEL
+      value: "jenkins-agent.jenkins.svc.cluster.local:50000"
+      
   volumes:
   - name: docker-config
     secret:
