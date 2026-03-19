@@ -8,26 +8,22 @@ spec:
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
-    command: ["/busybox/cat"]
+    command: ["/busybox/sleep"]
+    args: ["9999999"]
     tty: true
-    resources:
-      requests:
-        cpu: "500m"
-        memory: "512Mi"
-      limits:
-        cpu: "1000m"
-        memory: "2Gi"
     volumeMounts:
     - name: docker-config
       mountPath: /kaniko/.docker
-      
   - name: jnlp
     env:
     - name: JENKINS_URL
       value: "https://dev-jenkins.beans-atelier.org/"
     - name: JENKINS_TUNNEL
-      value: "jenkins-agent.jenkins.svc.cluster.local:50000"
-      
+      value: "jenkins.jenkins.svc.cluster.local:50000"
+    - name: JENKINS_SECRET
+      value: "${computer.jnlpmac}"
+    - name: JENKINS_NAME
+      value: "${computer.name}"
   volumes:
   - name: docker-config
     secret:
