@@ -68,7 +68,6 @@ spec:
                     --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${env.REPO_TAG} \
                     --destination=${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:latest \
                     --skip-tls-verify \
-                    --insecure \
                     --cache=true \
                     --cache-repo=${HARBOR_URL}/${HARBOR_PROJECT}/kaniko-cache
                     """
