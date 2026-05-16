@@ -19,7 +19,7 @@ COPY --from=build /app/build/libs/*.jar app.jar
 # 로그 디렉토리 생성
 RUN mkdir /logs && chmod 777 /logs
 
-EXPOSE 28080
+EXPOSE 8080
 
 # 절대 경로를 사용하여 실행
 ENTRYPOINT ["java", "-Xmx512M", "-Xms256M", "-jar", "/app/app.jar"]
