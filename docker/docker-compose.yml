@@ -8,3 +8,8 @@ services:
         expose:
             - 8080
         restart: always
+        networks:
+            - web-net
+networks:
+    web-net:
+        external: true
