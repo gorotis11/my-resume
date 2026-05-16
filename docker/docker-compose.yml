@@ -1,13 +1,10 @@
-version: "3"
-
 services:
     my-resume:
-        image: ${DOCKER_IMAGE_NAME}:${SERVICE_VERSION}
+        image: my-resume:latest
         container_name: my-resume
         environment:
-            - SERVICE_NAME=${SERVICE_NAME}
-            - SERVICE_VERSION=${SERVICE_VERSION}
-            - DOCKER_HOST_NON_SECURE_PORT=${DOCKER_HOST_NON_SECURE_PORT}
-        ports:
-            - ${DOCKER_HOST_NON_SECURE_PORT}:28080
+            - SERVICE_NAME=my-resume
+            - SERVICE_VERSION=1.0.0
+        expose:
+            - 8080
         restart: always
